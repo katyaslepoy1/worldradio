@@ -146,5 +146,4 @@ def play_station(paused, clickData, i, previous_country_code):
 
     # do nothing
     raise PreventUpdate
-if __name__ == '__main__':
-    app.run_server(debug=True)
+app.run_server(debug=True)
