@@ -111,7 +111,7 @@ app.layout = html.Div([
     Input('basic-interactions', 'clickData'),
     Input('station-num', 'value'),
     Input('country-code', 'value')) 
-def play_station(paused, clickData, i, previous_country_code):
+def play_station(clickData, i, previous_country_code):
     if clickData != None:
 
         # find country clicked
