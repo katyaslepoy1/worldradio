@@ -1,1 +1,1 @@
-web: gunicorn worldradio:app
+web: gunicorn worldradio:server
