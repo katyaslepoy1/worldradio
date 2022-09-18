@@ -17,6 +17,7 @@ from dash.exceptions import PreventUpdate
 
 
 app = Dash(__name__)
+server = app.server
 
 # cached radio browser session
 expire_after = timedelta(days=3)
@@ -146,4 +147,4 @@ def play_station(paused, clickData, i, previous_country_code):
 
     # do nothing
     raise PreventUpdate
-app.run_server(debug=True)
+
