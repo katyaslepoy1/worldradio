@@ -1,3 +1,4 @@
+from enum import auto
 from pyradios import RadioBrowser
 from requests_cache import CachedSession
 from datetime import timedelta
@@ -6,7 +7,6 @@ from ipywidgets import Output, VBox
 import plotly.express as px
 import plotly.graph_objects as go
 import vlc
-import random
 import time
 from dash import Dash, dcc, html, Input, Output
 from dash.exceptions import PreventUpdate
@@ -81,6 +81,7 @@ app.layout = html.Div([
     html.Div([
         dcc.Input(type='hidden', id='station-num', value=-1),
         dcc.Input(type='hidden', id='country-code', value=""),
+        html.Audio(id='playing', autoPlay=True),
         dcc.Loading(
             id="loading-2",
             type="circle",
@@ -108,11 +109,12 @@ app.layout = html.Div([
     Output("loading-output-2", "children"),
     Output('basic-interactions', 'clickData'),
     Output('station-num', 'value'), 
-    Output('country-code', 'value'), 
+    Output('country-code', 'value'),
+    Output('playing', 'src'),
     Input('basic-interactions', 'clickData'),
     Input('station-num', 'value'),
     Input('country-code', 'value')) 
-def play_station(clickData, i, previous_country_code):
+def play_station(paused, clickData, i, previous_country_code):
     if clickData != None:
 
         # find country clicked
@@ -131,32 +133,20 @@ def play_station(clickData, i, previous_country_code):
         if i == 0 and numStations == 1:
             raise PreventUpdate
 
+        i = (i + 1) % numStations
         
-        # stop any media already playing
-        player.stop()
+        # pull station url
+        station = thisCountriesStations[i]
+        url = station['url']
 
-        # continue until success
-        while player.is_playing() != 1:
-            i = (i + 1) % numStations
-            
-            # pull station url
-            station = thisCountriesStations[i]
-            url = station['url']
-
-            # start playing song
-            media = vlc_instance.media_new(url) 
-            player.set_media(media)
-            player.play()
-            time.sleep(1.7)
-
-            # save info of station playing to display on bottom
-            countryName = station['country']
-            stationName = station['name']
+        # save info of station playing to display on bottom
+        countryName = station['country']
+        stationName = station['name']
 
         display_info = "{} {}".format(countryName, stationName)
         display_info_2 =  "{} of {}".format(i+1, numStations)
         # reset clickData so we can click same button twice
-        return ["", display_info, html.Br(), display_info_2], None, i, countrycode
+        return ["", display_info, html.Br(), display_info_2], None, i, countrycode, url
 
     # do nothing
     raise PreventUpdate
