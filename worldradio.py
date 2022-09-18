@@ -6,7 +6,6 @@ import pandas as pd
 from ipywidgets import Output, VBox
 import plotly.express as px
 import plotly.graph_objects as go
-import vlc
 import time
 from dash import Dash, dcc, html, Input, Output
 from dash.exceptions import PreventUpdate
@@ -26,11 +25,6 @@ session = CachedSession(
     backend='sqlite',
     expire_after=expire_after)
 rb = RadioBrowser(session=session)
-
-# creating a vlc instance
-vlc_instance = vlc.Instance()
-player = vlc_instance.media_player_new()
-
 
 
 # put all the countries from the radio api into a dataframe
