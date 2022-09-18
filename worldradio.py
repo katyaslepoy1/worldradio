@@ -99,7 +99,9 @@ app.layout = html.Div([
                        }
                 ),
             ]
-        )
+        ),
+        html.P(['If station is not playing, please click on the country again to try a different station. This problem will be fixed when I figure out how to fix it.'], 
+        style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
     ])
 ])
 
