@@ -95,9 +95,9 @@ app.layout = html.Div([
                 ),
             ]
         )
-        # ,
-        # html.P(['If station is not playing after a few seconds, please click on the country again to try a different station. This problem will be fixed when I figure out how to fix it.'], 
-        # style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
+        ,
+        html.P(['If station is not playing after five seconds, please click on the country again to try a different station.'], 
+        style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
     ])
 ])
 
@@ -146,10 +146,8 @@ def play_station(clickData, i, previous_country_code):
                 r = requests.get(url, stream=True)
                 for line in r.iter_content(64): # pull the first chunk to test
                     content = line
-                    print(content)
                     break
                 if  b'\xff' not in content: # this is the start of a good stream?
-                    print('here')
                     # just fail if the stream isnt returning anything good
                     status_code = 0
                     continue
@@ -164,5 +162,3 @@ def play_station(clickData, i, previous_country_code):
 
     # do nothing
     raise PreventUpdate
-
-server.run()
