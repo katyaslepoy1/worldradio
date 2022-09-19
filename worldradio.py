@@ -73,7 +73,9 @@ app.layout = html.Div([
     html.Div([
         dcc.Input(type='hidden', id='station-num', value=-1),
         dcc.Input(type='hidden', id='country-code', value=""),
-        html.Audio(id='playing', autoPlay=True),
+        # dcc.Loading(
+            html.Audio(id='playing', autoPlay=True), 
+            #  id="loading-1" ),
         dcc.Loading(
             id="loading-2",
             type="circle",
@@ -85,6 +87,7 @@ app.layout = html.Div([
                     html.P(id='station-info'),
                     html.P([html.Br()]),
                     html.P(id='station-number-info'),
+                    html.Div(id="loading-output-1"), 
                     ], style={
                        'margin':'auto', 'width': '50%', 'text-align':'center',   # this centers the station info
                        'font-family':'monospace', 'font-size':20, 'font-weight':'bold', 'color':teal # font color/size
@@ -97,7 +100,6 @@ app.layout = html.Div([
         # style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
     ])
 ])
-
 
 # play station when country is clicked
 @app.callback(
@@ -123,7 +125,7 @@ def play_station(clickData, i, previous_country_code):
         # pull stations
         thisCountriesStations =  rb.stations_by_countrycode(countrycode)
         numStations = len(thisCountriesStations)
-        print(numStations)
+    #    print(numStations)
 
         # don't allow switching if there is only one station (prevents radio cutting out)
         if i == 0 and numStations == 1:
@@ -132,13 +134,22 @@ def play_station(clickData, i, previous_country_code):
         status_code = 0
         while status_code != 200:
             i = (i + 1) % numStations
-            print(i)
             # pull station url
             station = thisCountriesStations[i]
             url = station['url']
-            status_code = requests.head(url, stream=True, ).status_code
-
-
+            r = requests.head(url)
+            status_code = r.status_code
+            if status_code == 200: # just cuz request is good we sitll get bad streams
+                r = requests.get(url, stream=True)
+                for line in r.iter_content(64): # pull the first chunk to test
+                    content = line
+                    print(content)
+                    break
+                if  b'\xff' not in content: # this is the start of a good stream?
+                    print('here')
+                    # just fail if the stream isnt returning anything good
+                    status_code = 0
+                    continue
         # save info of station playing to display on bottom
         countryName = station['country']
         stationName = station['name']
@@ -151,3 +162,4 @@ def play_station(clickData, i, previous_country_code):
     # do nothing
     raise PreventUpdate
 
+server.run()
