@@ -151,5 +151,3 @@ def play_station(clickData, i, previous_country_code):
     # do nothing
     raise PreventUpdate
 
-
-server.run()
