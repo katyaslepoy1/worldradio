@@ -91,9 +91,10 @@ app.layout = html.Div([
                        }
                 ),
             ]
-        ),
-        html.P(['If station is not playing after a few seconds, please click on the country again to try a different station. This problem will be fixed when I figure out how to fix it.'], 
-        style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
+        )
+        # ,
+        # html.P(['If station is not playing after a few seconds, please click on the country again to try a different station. This problem will be fixed when I figure out how to fix it.'], 
+        # style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
     ])
 ])
 
@@ -136,7 +137,7 @@ def play_station(clickData, i, previous_country_code):
             url = station['url']
             status_code = requests.get(url).status_code
             print(status_code)
-            
+
 
         # save info of station playing to display on bottom
         countryName = station['country']
