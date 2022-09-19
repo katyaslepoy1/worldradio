@@ -137,9 +137,12 @@ def play_station(clickData, i, previous_country_code):
             # pull station url
             station = thisCountriesStations[i]
             url = station['url']
-            r = requests.head(url)
+            try:
+                r = requests.head(url)
+            except:
+                continue
             status_code = r.status_code
-            if status_code == 200: # just cuz request is good we sitll get bad streams
+            if status_code == 200: # request is good we still get bad streams
                 r = requests.get(url, stream=True)
                 for line in r.iter_content(64): # pull the first chunk to test
                     content = line
