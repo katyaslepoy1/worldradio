@@ -123,6 +123,7 @@ def play_station(clickData, i, previous_country_code):
         # pull stations
         thisCountriesStations =  rb.stations_by_countrycode(countrycode)
         numStations = len(thisCountriesStations)
+        print(numStations)
 
         # don't allow switching if there is only one station (prevents radio cutting out)
         if i == 0 and numStations == 1:
@@ -131,12 +132,11 @@ def play_station(clickData, i, previous_country_code):
         status_code = 0
         while status_code != 200:
             i = (i + 1) % numStations
-            
+            print(i)
             # pull station url
             station = thisCountriesStations[i]
             url = station['url']
-            status_code = requests.get(url).status_code
-            print(status_code)
+            status_code = requests.head(url, stream=True, ).status_code
 
 
         # save info of station playing to display on bottom
