@@ -1,12 +1,10 @@
-from enum import auto
+
 from pyradios import RadioBrowser
 from requests_cache import CachedSession
 from datetime import timedelta
 import pandas as pd
-from ipywidgets import Output, VBox
-import plotly.express as px
 import plotly.graph_objects as go
-import time
+import requests
 from dash import Dash, dcc, html, Input, Output
 from dash.exceptions import PreventUpdate
 
@@ -18,7 +16,6 @@ from dash.exceptions import PreventUpdate
 
 app = Dash(__name__)
 server = app.server
-
 # cached radio browser session
 expire_after = timedelta(days=3)
 session = CachedSession(
@@ -130,11 +127,16 @@ def play_station(clickData, i, previous_country_code):
         if i == 0 and numStations == 1:
             raise PreventUpdate
 
-        i = (i + 1) % numStations
-        
-        # pull station url
-        station = thisCountriesStations[i]
-        url = station['url']
+        status_code = 0
+        while status_code != 200:
+            i = (i + 1) % numStations
+            
+            # pull station url
+            station = thisCountriesStations[i]
+            url = station['url']
+            status_code = requests.get(url).status_code
+            print(status_code)
+            
 
         # save info of station playing to display on bottom
         countryName = station['country']
@@ -148,3 +150,5 @@ def play_station(clickData, i, previous_country_code):
     # do nothing
     raise PreventUpdate
 
+
+server.run()
