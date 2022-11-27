@@ -96,10 +96,9 @@ app.layout = html.Div([
                        }
                 ),
             ]
-        )
-        ,
-        html.P(['If station is not playing after five seconds, please click on the country again to try a different station.'], 
-        style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
+        ),
+#         html.P(['If station is not playing after five seconds, please click on the country again to try a different station.'], 
+#         style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
         html.P(['Good news! You can now go directly to elsewhereradio.com in your browser.'], 
         style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
    ])
