@@ -137,9 +137,14 @@ def play_station(clickData, i, previous_country_code):
         status_code = 0
         while status_code != 200:
             i = (i + 1) % numStations
+     
             # pull station url
             station = thisCountriesStations[i]
             url = station['url']
+            
+            # skip azul pop because it sucks
+            if "azul" in  station['name'].lower():
+                continue
             try:
                 r = requests.head(url)
             except:
