@@ -101,6 +101,8 @@ app.layout = html.Div([
         style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
         html.P(['Good news! You can now go directly to elsewhereradio.com in your browser.'], 
         style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
+        html.P(['Good news #2! By popular demand we have decided to eliminate Azul Pop from all country station lists.'], 
+        style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
    ])
 ])
 
