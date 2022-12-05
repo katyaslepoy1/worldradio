@@ -97,11 +97,9 @@ app.layout = html.Div([
                 ),
             ]
         ),
-        html.P(['Radio stations may take up to 10 seconds to start playing. After 10 seconds, click the country again to try a different station.'], 
+        html.P(['Listen to internet radio stations from around the world.'], 
         style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
-        html.P(['Good news! You can now go directly to elsewhereradio.com in your browser.'], 
-        style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
-        html.P(['Good news #2! By popular demand we have decided to eliminate Azul Pop from all country station lists.'], 
+        html.P(['Radio stations may take up to 10 seconds to start playing. After 10 seconds, click the country again to try a different station. Some countries may not have any working stations.'], 
         style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
    ])
 ])
