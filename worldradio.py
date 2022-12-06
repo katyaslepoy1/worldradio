@@ -8,10 +8,15 @@ import requests
 from dash import Dash, dcc, html, Input, Output
 from dash.exceptions import PreventUpdate
 
-# todo
-#  click on country makes pop up box with all the stations?
-#  get rid of hover?
-#  save favorites
+# styles 
+teal = '#5f9ea0'
+stickyFooter =  { 'position': 'fixed', 'bottom': '0', 'width': '100%'}
+stationInfo  =  {
+                'margin':'auto', 'width': '50%', 'text-align':'center',   # this centers the station info
+                'font-family':'monospace', 'font-size':20, 'font-weight':'bold', 'color':teal # font color/size
+                }
+centerText   =  { 'margin': 'auto', 'width': '50%', 'text-align':'center'}
+
 
 
 app = Dash(__name__)
@@ -58,7 +63,6 @@ f.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
 # set color and size of dots
 numCountries = len(df)
-teal = '#5f9ea0'
 scatter = f.data[0]
 scatter.marker.color=[teal] * numCountries
 scatter.marker.size=[10] * numCountries
@@ -75,9 +79,7 @@ app.layout = html.Div([
     html.Div([
         dcc.Input(type='hidden', id='station-num', value=-1),
         dcc.Input(type='hidden', id='country-code', value=""),
-        # dcc.Loading(
-            html.Audio(id='playing', autoPlay=True), 
-            #  id="loading-1" ),
+        html.Audio(id='playing', autoPlay=True), 
         dcc.Loading(
             id="loading-2",
             type="circle",
@@ -90,17 +92,25 @@ app.layout = html.Div([
                     html.P([html.Br()]),
                     html.P(id='station-number-info'),
                     html.Div(id="loading-output-1"), 
-                    ], style={
-                       'margin':'auto', 'width': '50%', 'text-align':'center',   # this centers the station info
-                       'font-family':'monospace', 'font-size':20, 'font-weight':'bold', 'color':teal # font color/size
-                       }
+                    ], style=stationInfo
                 ),
             ]
         ),
         html.P(['Listen to internet radio stations from around the world.'], 
-        style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
-        html.P(['Radio stations may take up to 10 seconds to start playing. After 10 seconds, click the country again to try a different station. Some countries may not have any working stations.'], 
-        style={ 'margin':'auto', 'width': '50%', 'text-align':'center'}),
+        style=centerText),
+        html.P(['Radio stations may take up to 5 seconds to start playing. After 5 seconds, click the country again to try a different station. Some countries may not have any working stations.'], 
+        style=centerText),
+        html.Footer( 
+            html.A(
+                children = [    
+                    html.P(
+                        ['elsewhere radio is an open source application'], 
+                        style=centerText
+                    )],
+                href="https://github.com/katyaslepoy1/worldradio"
+            ),
+            style=stickyFooter
+        )
    ])
 ])
 
@@ -155,6 +165,7 @@ def play_station(clickData, i, previous_country_code):
                 for line in r.iter_content(64): # pull the first chunk to test
                     content = line
                     break
+                print(content)
                 if  b'\xff' not in content: # this is the start of a good stream?
                     # just fail if the stream isnt returning anything good
                     status_code = 0
