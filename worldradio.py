@@ -23,13 +23,7 @@ app = Dash(__name__)
 app.title = 'Elsewhere Radio'
 app._favicon = ("icons8-radio-emoji-32.png")
 server = app.server
-# cached radio browser session
-expire_after = timedelta(days=3)
-session = CachedSession(
-    cache_name='cache',
-    backend='sqlite',
-    expire_after=expire_after)
-rb = RadioBrowser(session=session)
+rb = RadioBrowser()
 
 
 # put all the countries from the radio api into a dataframe
