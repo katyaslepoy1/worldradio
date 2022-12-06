@@ -15,7 +15,7 @@ stationInfo  =  {
                 'margin':'auto', 'width': '50%', 'text-align':'center',   # this centers the station info
                 'font-family':'monospace', 'font-size':20, 'font-weight':'bold', 'color':teal # font color/size
                 }
-centerText   =  { 'margin': 'auto', 'width': '50%', 'text-align':'center'}
+centerText=  { 'margin': 'auto', 'width': '50%', 'text-align':'center', 'padding': '1%'}
 
 
 
@@ -181,3 +181,4 @@ def play_station(clickData, i, previous_country_code):
 
     # do nothing
     raise PreventUpdate
+
