@@ -146,8 +146,8 @@ def play_station(clickData, i, previous_country_code):
             station = thisCountriesStations[i]
             url = station['url']
             
-            # skip azul pop because it sucks
-            if "azul" in  station['name'].lower():
+            # skip station
+            if "Abdulbasit" in  station['name'].lower():
                 continue
             try:
                 r = requests.head(url)
