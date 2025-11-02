@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 import requests
 from dash import Dash, dcc, html, Input, Output
 from dash.exceptions import PreventUpdate
+import json
 
 # styles 
 teal = '#5f9ea0'
@@ -28,6 +29,7 @@ rb = RadioBrowser()
 
 # put all the countries from the radio api into a dataframe
 countries = rb.countries()
+stations = {}
 df = pd.DataFrame(columns = ['countrycode', 'country'])
 for country in countries:
     code = country["iso_3166_1"]
@@ -108,6 +110,9 @@ app.layout = html.Div([
    ])
 ])
 
+
+cache = {}
+
 # play station when country is clicked
 @app.callback(
     Output("loading-output-2", "children"),
@@ -129,34 +134,55 @@ def play_station(clickData, i, previous_country_code):
         if countrycode != previous_country_code:
             i = -1
 
-        # pull stations
-        thisCountriesStations =  rb.stations_by_countrycode(countrycode)
-        numStations = len(thisCountriesStations)
-    #    print(numStations)
+        # this call is expensive so just do it the first time
+        if countrycode not in cache:
+            countryStations = rb.stations_by_countrycode(countrycode)
+            numStations = len(countryStations)
+            cache[countrycode] = [countryStations, numStations]
+            
+        else:
+            countryStations = cache[countrycode][0]
+            numStations = cache[countrycode][1]
 
         # don't allow switching if there is only one station (prevents radio cutting out)
         if i == 0 and numStations == 1:
             raise PreventUpdate
 
         status_code = 0
+        fail = -1
         while status_code != 200:
+
+            fail += 1
+            if fail == numStations:
+                no_stations = "This country has no working stations right now :("
+                return ["", no_stations], None, i, countrycode, ""
+            
             i = (i + 1) % numStations
      
             # pull station url
-            station = thisCountriesStations[i]
+            station = countryStations[i]
             url = station['url']
+            print(station['name'])
             
             # skip station
-            if "Abdulbasit" in  station['name'].lower():
+            if "abdulbasit" in  station['name'].lower():
                 continue
             try:
-                r = requests.head(url)
+                r = requests.get(url, stream=True)
+                status_code = r.status_code
             except:
                 continue
-            status_code = r.status_code
+
+            # redirect if necessary
+            if status_code == 302:
+                url = r.headers['Location']
+                r = requests.get(url, stream=True)
+                status_code = r.status_code
+
+            
             if status_code == 200: # request is good we still get bad streams
                 r = requests.get(url, stream=True)
-                for line in r.iter_content(64): # pull the first chunk to test
+                for line in r.iter_content(1): # pull the first chunk to test
                     content = line
                     break
                 print(content)
@@ -164,6 +190,7 @@ def play_station(clickData, i, previous_country_code):
                     # just fail if the stream isnt returning anything good
                     status_code = 0
                     continue
+
         # save info of station playing to display on bottom
         countryName = station['country']
         stationName = station['name']
@@ -176,3 +203,5 @@ def play_station(clickData, i, previous_country_code):
     # do nothing
     raise PreventUpdate
 
+if __name__ == '__main__':
+    app.run_server(debug=True)
