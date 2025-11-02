@@ -162,7 +162,6 @@ def play_station(clickData, i, previous_country_code):
             # pull station url
             station = countryStations[i]
             url = station['url']
-            print(station['name'])
             
             # skip station
             if "abdulbasit" in  station['name'].lower():
@@ -203,5 +202,3 @@ def play_station(clickData, i, previous_country_code):
     # do nothing
     raise PreventUpdate
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
