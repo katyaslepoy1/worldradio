@@ -217,6 +217,3 @@ def play_station(clickData, search, countrycode, station):
     # reset clickData so we can click same button twice
     return ["", display_info, html.Br(), display_info_2], None, url, share_url
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
