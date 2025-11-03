@@ -68,12 +68,11 @@ def layout(country="", station_id=0):
     dcc.Graph(
         id='basic-interactions',
         figure=f,
-
     ),
     html.Div([
         dcc.Input(type='hidden', id='station-num', value=station_id),
         dcc.Input(type='hidden', id='country-code', value=country),
-        dcc.Location(id='share-url', refresh='callback-nav'),
+        dcc.Location(id='share-url', refresh=False),
         html.Div([html.Audio(id='playing', autoPlay=True, controls=True)], style=centerText),
         dcc.Loading(
             id="loading-2",
@@ -115,20 +114,25 @@ def layout(country="", station_id=0):
 dash.register_page("home", layout=layout, path="/")
 app.layout = html.Div(dash.page_container)
 
+
+
+
 cache = {}
 # play station when country is clicked
 @app.callback(
     Output("loading-output-2", "children"),
     Output('basic-interactions', 'clickData'),
     Output('playing', 'src'),
+    Output('country-code', 'value'),
+    Output('station-num', 'value'),
     Output('share-url', 'search'),
+
     Input('basic-interactions', 'clickData'),
-    Input('share-url', 'search'),
     Input('country-code', 'value'),
     Input('station-num', 'value'))
-def play_station(clickData, search, countrycode, station):
+def play_station(clickData, countrycode, station):
     
-    if search == "" and clickData == None: # landing page
+    if countrycode == "" and clickData == None: # landing page
         raise PreventUpdate
     
     i = int(station)
@@ -215,5 +219,8 @@ def play_station(clickData, search, countrycode, station):
     display_info_2 =  "{} of {}".format(i+1, numStations)
     share_url =  '?country={}&station_id={}'.format(countrycode, i)
     # reset clickData so we can click same button twice
-    return ["", display_info, html.Br(), display_info_2], None, url, share_url
+    return ["", display_info, html.Br(), display_info_2], None, url, countrycode, i, share_url
 
+
+if __name__ == '__main__':
+    app.run(debug=True)
